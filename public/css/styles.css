@@ -3,6 +3,47 @@ body {
   background-color: #E8ECEF;
 }
 
+a:hover {
+	text-decoration: none;
+  color: #fc00ff;
+  border-color: #fc00ff;
+}
+
+a{
+  color: #666666;
+  text-decoration: underline;
+}
+
+.card-body>a{
+  text-decoration: none;
+  text-align: center;
+}
+
+label {
+  font-family: Poppins-Regular;
+  font-size: 20px;
+  color: #666666;
+}
+
+p {
+	font-family: Poppins-Regular;
+	font-size: 14px;
+	line-height: 1.7;
+	color: #666666;
+	margin: 0px;
+}
+
+button {
+  font-family: sans-serif;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+.btn[type="submit"] {
+box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;}
+
 .centered {
     padding-top: 200px;
     text-align: center;
@@ -13,4 +54,22 @@ body {
   font-size: 2rem;
   color: #fff;
   background-color: #000;
+}
+
+.card{
+  border-radius: 25px;
+  padding:40px;
+  font-family: Poppins-Regular;
+	color: #666666;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+
+.card-title {
+  text-align: center;
+}
+.card-footer {
+  margin-top: 50px;
+  text-align: center;
+  color: red;
+  background: white;
 }

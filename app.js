@@ -8,12 +8,17 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const findOrCreate = require('mongoose-findorcreate');
+const flash = require('connect-flash');
 // passport-local, a package which provides a strategy for authenticating with a username and password
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
+app.use(flash());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   secret: process.env.SECRET_KEY,
@@ -26,55 +31,125 @@ app.use(passport.session());
 mongoose.connect("mongodb://localhost:27017/secretDB");
 const userSchema = new mongoose.Schema({
   email: String,
-  password: String
+  password: String,
+  googleId: String,
+  facebookId: String
 })
 
 userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(findOrCreate);
 const User = mongoose.model('User', userSchema);
 // use static authenticate method of model in LocalStrategy
 passport.use(User.createStrategy());
 
 // use static serialize and deserialize of model for passport session support
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// // this just for local strategy
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
-app.route('/').get((req, res) =>{
+//// and this for all strategies
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  })
+});
+
+// The Google authentication strategy authenticates users using a Google account and OAuth 2.0 tokens.
+passport.use(new GoogleStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/secrets"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    // console.log(profile);
+    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
+// The Facebook authentication strategy authenticates users using a Facebook account and OAuth 2.0 tokens.
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_APP_ID,
+    clientSecret: process.env.FACEBOOK_APP_SECRET,
+    callbackURL: "http://localhost:3000/auth/facebook/secrets",
+    profileFields: ['id', 'displayName', 'photos', 'email', 'name', 'gender']
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    // console.log(profile);
+    User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
+
+app.route("/").get((req, res) =>{
   res.render('home');
   })
 
-app.route('/login')
-  .get((req, res) =>{
-    res.render('login');
-  })
+app.get("/auth/google",
+  passport.authenticate('google', { scope: ["profile"] }));
 
-  .post((req, res)=>{
-    const user = new User({
-      username: req.body.username,
-      password: req.body.password
+
+app.get("/auth/google/secrets",
+  passport.authenticate('google', { failureRedirect: "/login" }), function(req, res) {
+      // Successful authentication, redirect to secrets page.
+      res.redirect("/secrets");
     });
 
-    req.login(user, function(err){
-      if(err){
-        console.log(err);
-      } else {
-        passport.authenticate("local")(req, res,function(){
-          res.redirect('/secrets');
-        });
-      }
-    })
+app.get('/auth/facebook',
+  passport.authenticate('facebook'));
 
+app.get('/auth/facebook/secrets',
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/secrets');
+  });
+
+
+app.route("/login")
+  .get((req, res) =>{
+    const message = String(req.flash('error'));
+    res.render('login', {feedback: message});
   })
 
-  //// Or use this code
-  // .post(passport.authenticate("local",{
-  //   successRedirect: "/secrets",
-  //   failureRedirect: "/login"
-  //   }), function(req, res){
+  // .post((req, res)=>{
+  //   const user = new User({
+  //     username: req.body.username,
+  //     password: req.body.password
+  //   });
   //
-  // });
+  //   req.login(user, function(err){
+  //     if(err){
+  //       console.log(err);
+  //     } else {
+  //       passport.authenticate("local")(req, res,function(){
+  //         res.redirect('/secrets');
+  //       });
+  //     }
+  //   })
+  //
+  // })
+
+  // Or use this code
+  .post(passport.authenticate("local",{
+    successRedirect: "/secrets",
+    failureRedirect: "/login",
+    failureFlash: true,
+    // add this option to customize error message
+    // failureFlash: 'Custom Error'
+  }), function(err, user){
+
+  });
 
 
-app.route('/register')
+app.route("/register")
   .get((req, res) =>{
     res.render('register');
   })
@@ -86,13 +161,13 @@ app.route('/register')
         res.redirect('/register');
       } else {
         passport.authenticate('local')(req, res, function(){
-          res.redirect('/secrets');
+          res.redirect("/secrets");
         })
       }
     })
   })
 
-app.route('/secrets')
+app.route("/secrets")
   .get((req, res)=>{
     if(req.isAuthenticated()) {
       res.render('secrets');
@@ -101,10 +176,12 @@ app.route('/secrets')
     }
   })
 
-app.route('/logout')
+app.route("/logout")
   .get((req, res)=>{
-    req.logout();
-    res.redirect('/');
+    req.logout(function(){
+      res.redirect('/');
+    });
+
   })
 
 app.listen(3000, ()=>{

@@ -1,11 +1,30 @@
 <%- include('partials/header') %>
 
 <div class="container mt-5">
-  <h1>Login</h1>
 
-  <div class="row">
-    <div class="col-sm-8">
+
+  <div class="row justify-content-center">
+    <div class="col-sm-6">
       <div class="card">
+        <div class="card-title">
+          <h1>Sign In With</h1>
+        </div>
+        <div class="row">
+          <div class="card-body col-lg-6">
+            <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
+              <i class="fab fa-google"></i>
+              Google
+            </a>
+          </div>
+          <div class="card-body col-lg-6">
+            <a class="btn btn-block btn-social btn-facebook" href="/auth/facebook" role="button">
+              <i class="fab fa-facebook"></i>
+              Facebook
+            </a>
+          </div>
+        </div>
+
+
         <div class="card-body">
 
           <!-- Makes POST request to /login route -->
@@ -18,25 +37,25 @@
               <label for="password">Password</label>
               <input type="password" class="form-control" name="password" required>
             </div>
-            <button type="submit" class="btn btn-dark">Login</button>
+            <div class="card-body text-center">
+              <button type="submit" class="btn btn-lg btn-dark col-lg-6">Sign In</button>
+            </div>
+            <div class="text-center">
+              <span>Not a member? </span><a href="/register">Sign up now</a>
+            </div>
           </form>
+          <% if (feedback.length > 0) { %>
+            <div class="card-footer">
+              <p><%= feedback %></p>
+              <p>Please try again!</p>
+            </div>
+          <% } %>
 
         </div>
       </div>
     </div>
 
-    <!-- <div class="col-sm-4">
-      <div class="card">
-        <div class="card-body">
-          <a class="btn btn-block" href="/auth/google" role="button">
-            <i class="fab fa-google"></i>
-            Sign In with Google
-          </a>
-        </div>
-      </div>
-    </div> -->
 
   </div>
 </div>
-
 <%- include('partials/footer') %>

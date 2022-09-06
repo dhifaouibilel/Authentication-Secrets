@@ -33,7 +33,8 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   googleId: String,
-  facebookId: String
+  facebookId: String,
+  secret: String
 })
 
 userSchema.plugin(passportLocalMongoose);
@@ -169,12 +170,32 @@ app.route("/register")
 
 app.route("/secrets")
   .get((req, res)=>{
+    User.find({"secret": {$ne: null}}, (err, foundUsers)=>{
+      if(!err) {
+        res.render('secrets', {usersWithSecrets: foundUsers});
+      }
+    })
+  })
+
+app.route("/submit")
+  .get((req, res)=>{
     if(req.isAuthenticated()) {
-      res.render('secrets');
+      res.render('submit');
     } else {
       res.redirect('/login');
     }
   })
+
+  .post((req, res)=>{
+    const submittedSecret = req.body.secret;
+    User.updateOne({_id: req.user._id}, {secret: submittedSecret}, (err, user)=>{
+      if (err) {
+        console.log(err);
+      } else {
+        res.redirect('secrets');
+      }
+    });
+  });
 
 app.route("/logout")
   .get((req, res)=>{

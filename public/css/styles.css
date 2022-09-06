@@ -14,7 +14,7 @@ a{
   text-decoration: underline;
 }
 
-.card-body>a{
+a[role="button"]{
   text-decoration: none;
   text-align: center;
 }
@@ -29,7 +29,7 @@ p {
 	font-family: Poppins-Regular;
 	font-size: 14px;
 	line-height: 1.7;
-	color: #666666;
+  color: red;
 	margin: 0px;
 }
 
@@ -54,6 +54,11 @@ box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0
   font-size: 2rem;
   color: #fff;
   background-color: #000;
+  margin-bottom: 1rem;
+}
+
+.lead{
+	color: #666666;
 }
 
 .card{

@@ -21,9 +21,9 @@ and these are the varying levels of security used:
 * Level 5: Cookies and Sessions
 * Level 6: Google and Facebook OAuth 2.0 Authentication
 ```
+> **Note**
+> Each security and authentication level is commited under its name. 
 
-**Note** 
-Each security and authentication level is commited under its name. 
 
 ## Built With
 Project is created with:
@@ -69,12 +69,12 @@ Once credentials have been obtained, save them inside the .env file
  ```sh
    nodemon app.js
    ```  
-   
-**Note** 
-you can rollback to any level of security you want by using checkout commits:
+  
+> **Note**
+> you can rollback to any level of security you want by using checkout commits:
 
  ```sh
-   git checkout sha-of-commit .
+   git checkout SHA_OF_COMMIT .
    ``` 
 
 

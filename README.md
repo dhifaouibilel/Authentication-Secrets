@@ -1,4 +1,4 @@
-<img align="center" src="https://user-images.githubusercontent.com/49604677/188925310-4e7132d4-9728-4daa-a20d-5f2cefc1ee21.svg">
+<p align="center"><img align="center" src="https://user-images.githubusercontent.com/49604677/188925310-4e7132d4-9728-4daa-a20d-5f2cefc1ee21.svg"></p>
 
 
 # Authentication-Secrets  
@@ -10,9 +10,9 @@
 
 
 ## General info
-
+<p align="center">
 <img width="610" alt="login capt" src="https://user-images.githubusercontent.com/49604677/188709987-26c726c0-425a-4124-b73a-9c0f37c03b58.png">
-
+</p>
 this project covers 6 levels of security beginning with saving passwords in plain text and arriving at authentication with Facebook and google.
 and these are the varying levels of security used: 
 ``` bash 

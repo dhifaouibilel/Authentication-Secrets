@@ -1,5 +1,7 @@
-# Authentication-Secrets  ![OAUTH2](https://user-images.githubusercontent.com/49604677/188925310-4e7132d4-9728-4daa-a20d-5f2cefc1ee21.svg)
+![OAUTH2](https://user-images.githubusercontent.com/49604677/188925310-4e7132d4-9728-4daa-a20d-5f2cefc1ee21.svg)
 
+
+# Authentication-Secrets  
 ## Table of contents
 * [General info](#general-info)
 * [Built With](#built-with)
